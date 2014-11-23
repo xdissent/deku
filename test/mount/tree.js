@@ -1,6 +1,6 @@
 
 var assert = require('component/assert@0.4.0');
-var Tree = require('/lib/renderer/tree');
+var Tree = require('/lib/renderer/component/tree');
 var dom = require('/lib/node');
 
 describe('tree', function(){
