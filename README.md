@@ -30,7 +30,7 @@ var component = require('segmentio/deku');
 // Simple button component.
 var ButtonComponent = component({
   onClick() {
-    this.setState({ clicked: true });
+    this.update({ clicked: true });
   }
   render(dom, state, props) {
     return dom('button', { onClick: this.onClick }, [props.text]);
