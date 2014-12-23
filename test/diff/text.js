@@ -3,13 +3,15 @@ var assert = require('component/assert@0.4.0');
 var component = require('/lib/component');
 
 describe('text', function(){
-  it('should update text nodes', function(){
+
+  it('should update text nodes', function(done){
     var Page = component({
       render: function(dom, state, props) {
         return dom('span', null, [props.one + ' ' + props.two]);
       },
       afterUpdate: function(){
         assert.equal(el.innerHTML, '<span>Hello Pluto</span>');
+        done();
       }
     });
     var mount = Page.render(el, {
@@ -22,7 +24,7 @@ describe('text', function(){
     });
   });
 
-  it('should add text elements', function(){
+  it('should add text elements', function(done){
     var Page = component({
       afterMount: function(el, state, props){
         if (props.i === 0) {
@@ -45,19 +47,22 @@ describe('text', function(){
   it('should remove text elements', function(done){
     var Page = component({
       afterMount: function(el, state, props){
-        if (props.i !== 0) {
-          assert(el.outerHTML === '<div></div>');
-        } else {
+        if (props.showText) {
           assert(el.outerHTML === '<div>bar</div>');
+        } else {
+          assert(el.outerHTML === '<div></div>');
         }
       },
       render: function(dom, state, props) {
-        if (props.i !== 0) return dom('div');
-        return dom('div', null, ['bar'])
+        if (props.showText) {
+          return dom('div', null, ['bar']);
+        } else {
+          return dom('div');
+        }
       }
     });
-    var mount = Page.render(el, { i: 0 });
-    mount.setProps({ i: 1 }, function(){
+    var mount = Page.render(el, { showText: true });
+    mount.setProps({ showText: false }, function(){
       done();
     });
   });

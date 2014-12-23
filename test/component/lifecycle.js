@@ -108,4 +108,71 @@ describe('lifecycle events', function(){
     assert(i === 4, i);
     assert(el.innerHTML === "");
   });
+
+  it('should fire mount events on sub-components created later', function(done){
+    var calls = 0;
+    function inc() { calls++ }
+
+    var ComponentA = component({
+      afterMount: inc,
+      beforeMount: inc,
+      render: function(n, state, props){
+        return n('span', { name: props.name }, [props.text]);
+      }
+    });
+
+    var ComponentB = component({
+      afterMount: inc,
+      beforeMount: inc,
+      render: function(n, state, props){
+        if (props.i === 1) {
+          return n();
+        } else {
+          return n(ComponentA, { text: 'foo', name: props.name });
+        }
+      }
+    });
+
+    var mount = ComponentB.render(el, { name: 'Bob', i: 1 });
+    mount.setProps({
+      i: 2
+    }, function(){
+      assert.equal(calls, 4);
+      done();
+    });
+
+  });
+
+  it('should fire unmount events on sub-components created later', function(done){
+    var calls = 0;
+    function inc() { calls++ }
+
+    var ComponentA = component({
+      afterUnmount: inc,
+      beforeUnmount: inc,
+      render: function(n, state, props){
+        return n('span', { name: props.name }, [props.text]);
+      }
+    });
+
+    var ComponentB = component({
+      afterUnmount: inc,
+      beforeUnmount: inc,
+      render: function(n, state, props){
+        if (props.i !== 1) {
+          return n();
+        } else {
+          return n(ComponentA, { text: 'foo', name: props.name });
+        }
+      }
+    });
+
+    var mount = ComponentB.render(el, { name: 'Bob', i: 1 });
+    mount.setProps({
+      i: 2
+    }, function(){
+      assert.equal(calls, 4);
+      done();
+    });
+  });
 });

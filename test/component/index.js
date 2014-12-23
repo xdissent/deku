@@ -103,12 +103,14 @@ describe('component', function(){
     });
     var ComponentB = component({
       render: function(n, state, props){
-        return n(ComponentA, { text: 'foo', name: props.name });
+        return n('div', null, [
+          n(ComponentA, { text: 'foo', name: props.name })
+        ]);
       }
     });
     var mount = ComponentB.render(el, { name: 'Bob' });
     mount.setProps({ name: 'Tom' }, function(){
-      assert.equal(el.innerHTML, '<span name="Tom">foo</span>');
+      assert.equal(el.innerHTML, '<div><span name="Tom">foo</span></div>');
       done();
     })
   });
@@ -221,6 +223,7 @@ describe('component', function(){
     var ComponentA = component({
       render: function(n, state, props){
         calls++;
+        console.log('rendering...');
         return n('span', null, [props.text]);
       }
     });
@@ -235,7 +238,7 @@ describe('component', function(){
       character: 'Link'
     });
     mount.setProps({ character: 'Zelda' }, function(){
-      assert(calls === 1);
+      assert.equal(calls, 1);
       done();
     });
   });

@@ -92,7 +92,7 @@ describe('batched rendering', function(){
     });
     var mount = Component.render(el, { text: 'one' });
     mount.setProps({ text: 'two' }, function(){
-      assert(el.innerHTML === "<div>two Mirror Shield</div>");
+      assert.equal(el.innerHTML, "<div>two Mirror Shield</div>");
       done();
     });
   });
@@ -109,7 +109,7 @@ describe('batched rendering', function(){
     });
   })
 
-  it.skip('should only render components once when state and props change', function(done){
+  it('should only render components once when state and props change', function(done){
     var i = 0;
     var emitter = new Emitter();
     var ComponentA = component({

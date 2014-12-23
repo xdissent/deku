@@ -220,20 +220,22 @@ describe('structure', function(){
    */
 
   it('should swap elements for components', function(done){
-    var i = 0;
     var ComponentA = component({
       render: function(n, state, props){
         return n(props.type, null, ['test']);
       }
     });
     var ComponentB = component({
-      render: function(n){
-        if (i === 0) return n('div');
-        return n(ComponentA);
+      render: function(n, state, props){
+        if (props.showElement) {
+          return n('div');
+        } else {
+          return n(ComponentA);
+        }
       }
     });
-    var mount = ComponentB.render(el, { i: 0 });
-    mount.setProps({ i: 1 }, function(){
+    var mount = ComponentB.render(el, { showElement: true });
+    mount.setProps({ showElement: false }, function(){
       assert.equal(el.innerHTML, '<div>test</div>');
       done();
     });
