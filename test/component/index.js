@@ -76,7 +76,7 @@ describe('component', function(){
       two: 'World'
     });
     mount.setProps({ one: 'Hello' });
-    mount.forceUpdate();
+    mount.update();
     assert.equal(el.innerHTML, '<span>Hello undefined</span>');
   });
 
@@ -214,23 +214,6 @@ describe('component', function(){
       assert(i === 1);
       done();
     });
-  });
-
-  it('should ignore the shouldUpdate method if forceUpdate is used', function () {
-    var i = 0;
-    var Page = component({
-      render: function(dom, state, props){
-        i++;
-        return dom();
-      },
-      shouldUpdate: function(){
-        return false;
-      }
-    });
-    var mount = Page.render(el, { n: 0 });
-    mount.setProps({ n: 1 });
-    mount.forceUpdate();
-    assert(i === 2);
   });
 
   it('shouldnt update child when the props haven\'t changed', function (done) {

@@ -23,82 +23,82 @@ describe('text', function(){
   });
 
   it('should add text elements', function(){
-    var i = 0;
     var Page = component({
-      afterMount: function(el){
-        if (i === 0) {
+      afterMount: function(el, state, props){
+        if (props.i === 0) {
           assert(el.outerHTML === '<div></div>');
         } else {
           assert(el.outerHTML === '<div>bar</div>');
         }
       },
-      render: function(dom) {
-        if (i === 0) return dom('div');
+      render: function(dom, state, props) {
+        if (props.i === 0) return dom('div');
         return dom('div', null, ['bar'])
       }
     });
-    var mount = Page.render(el);
-    i = 1;
-    mount.forceUpdate();
+    var mount = Page.render(el, { i: 0 });
+    mount.setProps({ i: 1 }, function(){
+      done();
+    });
   });
 
-  it('should remove text elements', function(){
-    var i = 0;
+  it('should remove text elements', function(done){
     var Page = component({
-      afterMount: function(el){
-        if (i !== 0) {
+      afterMount: function(el, state, props){
+        if (props.i !== 0) {
           assert(el.outerHTML === '<div></div>');
         } else {
           assert(el.outerHTML === '<div>bar</div>');
         }
       },
-      render: function(dom) {
-        if (i !== 0) return dom('div');
+      render: function(dom, state, props) {
+        if (props.i !== 0) return dom('div');
         return dom('div', null, ['bar'])
       }
     });
-    var mount = Page.render(el);
-    i = 1;
-    mount.forceUpdate();
+    var mount = Page.render(el, { i: 0 });
+    mount.setProps({ i: 1 }, function(){
+      done();
+    });
   });
 
-  it('should swap elements with text elements', function(){
-    var i = 0;
+  it('should swap elements with text elements', function(done){
     var Page = component({
-      afterMount: function(el){
-        if (i === 0) {
+      afterMount: function(el, state, props){
+        if (props.i === 0) {
           assert(el.innerHTML === '<span></span>');
         } else {
           assert(el.innerHTML === 'bar');
         }
       },
-      render: function(dom) {
-        if (i === 0) return dom('div', null, [dom('span')])
+      render: function(dom, state, props) {
+        if (props.i === 0) return dom('div', null, [dom('span')])
         return dom('div', null, ['bar'])
       }
     });
-    var mount = Page.render(el);
-    i = 1;
-    mount.forceUpdate();
+    var mount = Page.render(el, { i: 0 });
+    mount.setProps({ i: 1 }, function(){
+      done();
+    });
   });
 
-  it('should swap text elements with elements', function(){
-    var i = 0;
+  it('should swap text elements with elements', function(done){
     var Page = component({
-      afterMount: function(el){
-        if (i !== 0) {
+      afterMount: function(el, state, props){
+        if (props.i !== 0) {
           assert(el.innerHTML === '<span></span>');
         } else {
           assert(el.innerHTML === 'bar');
         }
       },
-      render: function(dom) {
-        if (i !== 0) return dom('div', null, [dom('span')])
+      render: function(dom, state, props) {
+        if (props.i !== 0) return dom('div', null, [dom('span')])
         return dom('div', null, ['bar'])
       }
     });
-    var mount = Page.render(el);
-    i = 1;
-    mount.forceUpdate();
+    var mount = Page.render(el, { i: 0 });
+    mount.setProps({ i: 1 }, function(){
+      done();
+    });
   });
 });

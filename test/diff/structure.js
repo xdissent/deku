@@ -10,19 +10,19 @@ describe('structure', function(){
    * be added to the DOM.
    */
 
-  it('should add new elements', function(){
-    var i = 1;
+  it('should add new elements', function(done){
     var Page = component({
-      render: function(dom){
-        if (i === 1) return dom('div');
-        if (i === 2) return dom('div', null, [dom('span', { id: 'foo' })]);
+      render: function(dom, state, props){
+        if (props.i === 1) return dom('div');
+        if (props.i === 2) return dom('div', null, [dom('span', { id: 'foo' })]);
       }
     });
-    var mount = Page.render(el);
+    var mount = Page.render(el, { i: 1 });
     assert(document.querySelector('#foo') == null);
-    i = 2;
-    mount.forceUpdate();
-    assert(document.querySelector('#foo'));
+    mount.setProps({ i: 2 }, function(){
+      assert(document.querySelector('#foo'));
+      done();
+    });
   });
 
   /**
@@ -30,19 +30,19 @@ describe('structure', function(){
    * from the DOM that don't exist in the new rendering.
    */
 
-  it('should remove nodes', function(){
-    var i = 1;
+  it('should remove nodes', function(done){
     var Page = component({
-      render: function(dom){
-        if (i === 1) return dom('div', null, [dom('span', { id: 'foo' })]);
-        if (i === 2) return dom('div');
+      render: function(dom, state, props){
+        if (props.i === 1) return dom('div', null, [dom('span', { id: 'foo' })]);
+        if (props.i === 2) return dom('div');
       }
     });
-    var view = Page.render(el);
+    var mount = Page.render(el, { i: 1 });
     assert(document.querySelector('#foo'));
-    i = 2;
-    view.forceUpdate();
-    assert(document.querySelector('#foo') == null);
+    mount.setProps({ i: 2 }, function(){
+      assert(document.querySelector('#foo') == null);
+      done();
+    });
   });
 
   /**
@@ -50,24 +50,23 @@ describe('structure', function(){
    * from the DOM that don't exist in the new rendering.
    */
 
-  it('should remove child nodes', function(){
-    var i = 1;
+  it('should remove child nodes', function(done){
     var Page = component({
-      render: function(dom){
-        if (i === 1) return dom('div', { id: 'root' }, [dom('span', { id: 'foo' }), dom('span', { id: 'bar' }), dom('span', { id: 'baz' })]);
-        if (i === 2) return dom('div', { id: 'root' }, [dom('span', { id: 'foo' })]);
+      render: function(dom, state, props){
+        if (props.i === 1) return dom('div', { id: 'root' }, [dom('span', { id: 'foo' }), dom('span', { id: 'bar' }), dom('span', { id: 'baz' })]);
+        if (props.i === 2) return dom('div', { id: 'root' }, [dom('span', { id: 'foo' })]);
       }
     });
-    var view = Page.render(el);
+    var scene = Page.render(el, { i: 1 });
     assert(document.querySelector('#foo'));
     assert(document.querySelector('#bar'));
     assert(document.querySelector('#baz'));
-    i = 2;
-    view.forceUpdate();
-    console.log(document.querySelector('#root').innerHTML)
-    assert(document.querySelector('#foo'));
-    assert(document.querySelector('#bar') == null);
-    assert(document.querySelector('#baz') == null);
+    scene.setProps({ i: 2 }, function(){
+      assert(document.querySelector('#foo'));
+      assert(document.querySelector('#bar') == null);
+      assert(document.querySelector('#baz') == null);
+      done();
+    });
   });
 
   /**
@@ -75,7 +74,7 @@ describe('structure', function(){
    * the same content.
    */
 
-  it('should change tag names', function(){
+  it('should change tag names', function(done){
     var i = 0;
     var ComponentA = component({
       render: function(n, state, props){
@@ -84,9 +83,10 @@ describe('structure', function(){
     });
     var mount = ComponentA.render(el, { type: 'span' });
     assert.equal(el.innerHTML, '<span>test</span>');
-    mount.setProps({ type: 'div' });
-    mount.forceUpdate();
-    assert.equal(el.innerHTML, '<div>test</div>');
+    mount.setProps({ type: 'div' }, function(){
+      assert.equal(el.innerHTML, '<div>test</div>');
+      done();
+    });
   });
 
   /**
@@ -109,13 +109,13 @@ describe('structure', function(){
     });
     var mount = ComponentB.render(el, { type: 'span' });
     assert(mount.entity.el === mount.entity.children['0'].el);
-    mount.setProps({ type: 'div' });
-    mount.forceUpdate();
-    assert(mount.entity.el === mount.entity.children['0'].el);
-    mount.setProps({ type: 'b' });
-    mount.forceUpdate();
-    assert.equal(mount.entity.el.outerHTML, '<b>test</b>');
-    assert.equal(mount.entity.children['0'].el.outerHTML, '<b>test</b>');
+    mount.setProps({ type: 'div' }, function(){
+      assert(mount.entity.el === mount.entity.children['0'].el);
+      mount.setProps({ type: 'b' }, function(){
+        assert.equal(mount.entity.el.outerHTML, '<b>test</b>');
+        assert.equal(mount.entity.children['0'].el.outerHTML, '<b>test</b>');
+      });
+    });
   });
 
   /**
@@ -124,8 +124,7 @@ describe('structure', function(){
    * the correct element.
    */
 
-  it('should change tag names and update', function(){
-    var i = 0;
+  it('should change tag names and update', function(done){
     var ComponentA = component({
       render: function(n, state, props){
         return n(props.type, null, props.text);
@@ -137,11 +136,12 @@ describe('structure', function(){
       }
     });
     var mount = ComponentB.render(el, { type: 'span', text: 'test' });
-    mount.setProps({ type: 'div', text: 'test' });
-    mount.forceUpdate();
-    mount.setProps({ type: 'div', text: 'foo' });
-    mount.forceUpdate();
-    assert.equal(el.innerHTML, '<div>foo</div>');
+    mount.setProps({ type: 'div', text: 'test' }, function(){
+      mount.setProps({ type: 'div', text: 'foo' }, function(){
+        assert.equal(el.innerHTML, '<div>foo</div>');
+        done();
+      });
+    });
   });
 
   /**
@@ -149,7 +149,7 @@ describe('structure', function(){
    * node should be recursively removed and unmounted.
    */
 
-  it('should remove nested components when removing a branch', function(){
+  it('should remove nested components when removing a branch', function(done){
     var i = 0;
     function inc() { i++ }
     var ComponentA = component({
@@ -184,9 +184,10 @@ describe('structure', function(){
       }
     });
     var mount = ComponentC.render(el, { n: 0 });
-    mount.setProps({ n: 1 });
-    mount.forceUpdate();
-    assert.equal(i, 6);
+    mount.setProps({ n: 1 }, function(){
+      assert.equal(i, 6);
+      done();
+    });
   });
 
   /**
@@ -195,7 +196,7 @@ describe('structure', function(){
    * that is rendered.
    */
 
-  it('should change sub-component tag names', function(){
+  it('should change sub-component tag names', function(done){
     var i = 0;
     var ComponentA = component({
       render: function(n, state, props){
@@ -208,16 +209,17 @@ describe('structure', function(){
       }
     });
     var mount = ComponentB.render(el, { type: 'span' });
-    mount.setProps({ type: 'div' });
-    mount.forceUpdate();
-    assert.equal(el.innerHTML, '<div>test</div>');
+    mount.setProps({ type: 'div' }, function(){
+      assert.equal(el.innerHTML, '<div>test</div>');
+      done();
+    });
   });
 
   /**
    * It should be able to render new components when re-rendering
    */
 
-  it('should swap elements for components', function(){
+  it('should swap elements for components', function(done){
     var i = 0;
     var ComponentA = component({
       render: function(n, state, props){
@@ -230,10 +232,11 @@ describe('structure', function(){
         return n(ComponentA);
       }
     });
-    var mount = ComponentB.render(el);
-    i = 1;
-    mount.forceUpdate();
-    assert.equal(el.innerHTML, '<div>test</div>');
+    var mount = ComponentB.render(el, { i: 0 });
+    mount.setProps({ i: 1 }, function(){
+      assert.equal(el.innerHTML, '<div>test</div>');
+      done();
+    });
   });
 
   /**
@@ -241,7 +244,7 @@ describe('structure', function(){
    * should be removed and unmount and replaced with the new component
    */
 
-  it('should replace components', function(){
+  it('should replace components', function(done){
     var ComponentA = component({
       render: function(n, state, props){
         return n('div', null, ['A']);
@@ -260,10 +263,11 @@ describe('structure', function(){
     });
     var mount = ComponentC.render(el, { type: 'A' });
     assert.equal(el.innerHTML, '<div>A</div>');
-    mount.setProps({ type: 'B' });
-    mount.forceUpdate();
-    assert.equal(el.innerHTML, '<div>B</div>');
-    assert(mount.entity.children['0'].component instanceof ComponentB);
+    mount.setProps({ type: 'B' }, function(){
+      assert.equal(el.innerHTML, '<div>B</div>');
+      assert(mount.entity.children['0'].component instanceof ComponentB);
+      done();
+    });
   })
 
   /**
@@ -271,7 +275,7 @@ describe('structure', function(){
    * are moved from the tree.
    */
 
-  it('should remove references to child components when they are removed', function(){
+  it('should remove references to child components when they are removed', function(done){
     var Component = component({
       render: function(n, state, props){
         return n('div', null, ['Component']);
@@ -285,9 +289,10 @@ describe('structure', function(){
     });
     var mount = Wrapper.render(el, { type: 'component' });
     assert(mount.entity.children['0']);
-    mount.setProps({ type: 'element' });
-    mount.forceUpdate();
-    assert.equal(el.innerHTML, '<div>Element</div>');
-    assert(mount.entity.children['0'] == null);
+    mount.setProps({ type: 'element' }, function(){
+      assert.equal(el.innerHTML, '<div>Element</div>');
+      assert(mount.entity.children['0'] == null);
+      done();
+    });
   });
 });
