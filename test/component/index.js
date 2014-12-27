@@ -2,7 +2,7 @@
 var assert = require('component/assert@0.4.0');
 var component = require('/lib/component');
 
-describe('component', function(){
+describe.only('Component API', function(){
   it('should create a component', function(){
     var Page = component({
       render: function(dom, state, props){
@@ -108,8 +108,8 @@ describe('component', function(){
         ]);
       }
     });
-    var mount = ComponentB.render(el, { name: 'Bob' });
-    mount.setProps({ name: 'Tom' }, function(){
+    var scene = ComponentB.render(el, { name: 'Bob' });
+    scene.setProps({ name: 'Tom' }, function(){
       assert.equal(el.innerHTML, '<div><span name="Tom">foo</span></div>');
       done();
     })

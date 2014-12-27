@@ -14,7 +14,7 @@ Create composable, reactive views that use implement a virtual DOM system simila
 * Easily testable components without needing Jest
 * Isolated components that don't need a global to be mounted
 * It doesn't create virtual events
-* It doesn't support old IE
+* It only supports evergreen browsers
 * Easily add plugins
 * Events instead of mixins
 * Render methods can be imported instead of inline reducing the need for JSX
