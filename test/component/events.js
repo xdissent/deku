@@ -3,7 +3,7 @@ var trigger = require('adamsanderson/trigger-event');
 var assert = require('component/assert@0.4.0');
 var component = require('/lib/component');
 
-describe('events', function(){
+describe('Component Interactions', function(){
 
   it('should add click event', function(){
     var count = 0;

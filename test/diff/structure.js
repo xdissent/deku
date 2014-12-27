@@ -2,7 +2,7 @@
 var assert = require('component/assert@0.4.0');
 var component = require('/lib/component');
 
-describe('structure', function(){
+describe('Diffing Structure', function(){
 
   /**
    * When updating a component it should add new elements

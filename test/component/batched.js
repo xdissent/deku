@@ -3,7 +3,8 @@ var assert = require('component/assert@0.4.0');
 var component = require('/lib/component');
 var Emitter = require('component/emitter');
 
-describe('batched rendering', function(){
+describe('Scene Rendering', function(){
+
   it('should update props on the next frame', function(){
     var Component = component({
       render: function(dom, state, props){
@@ -17,6 +18,27 @@ describe('batched rendering', function(){
       text: 'two'
     });
     assert(el.innerHTML === '<div>one</div>');
+    assert(mount.entity.props.text === 'one');
+  });
+
+  it.skip('should only update on each frame if it has change', function () {
+
+  });
+
+  it('should return a promise', function(done){
+    var Component = component({
+      render: function(dom, state, props){
+        return dom('div', null, [props.text]);
+      }
+    });
+    var mount = Component.render(el, {
+      text: 'one'
+    });
+    mount.setProps({ text: 'two' }).then(function(){
+      assert(el.innerHTML === '<div>one</div>');
+      assert(mount.entity.props.text === 'one');
+      done();
+    });
   });
 
   it('should setProps and call the callback', function(done){
@@ -32,6 +54,22 @@ describe('batched rendering', function(){
       assert(el.innerHTML === '<div>two</div>');
       done();
     });
+  });
+
+  it('should return a promise when changing the props', function(done){
+    var Component = component({
+      render: function(dom, state, props){
+        return dom('div', null, [props.text]);
+      }
+    });
+    var mount = Component.render(el, {
+      text: 'one'
+    });
+    mount.setProps({ text: 'two' })
+      .then(function(){
+        assert(el.innerHTML === '<div>two</div>');
+        done();
+      });
   });
 
   it('should not update twice when setting props', function(done){
@@ -74,7 +112,7 @@ describe('batched rendering', function(){
     });
   });
 
-  it('should immediately update when setting state in `beforeUpdate`', function(done){
+  it('should throw update when setting state in `beforeUpdate`', function(done){
     var i = 0;
     var Component = component({
       initialState: function(){
@@ -83,7 +121,11 @@ describe('batched rendering', function(){
         };
       },
       beforeUpdate: function(){
-        this.setState({ shield: 'Mirror Shield' });
+        var self = this;
+        assert.throws(function(){
+          self.setState({ shield: 'Mirror Shield' });
+        });
+        done();
       },
       render: function(dom, state, props){
         i++;
@@ -91,10 +133,7 @@ describe('batched rendering', function(){
       }
     });
     var mount = Component.render(el, { text: 'one' });
-    mount.setProps({ text: 'two' }, function(){
-      assert.equal(el.innerHTML, "<div>two Mirror Shield</div>");
-      done();
-    });
+    mount.setProps({ text: 'two' });
   });
 
   it("should still call all callback even if it doesn't change", function(done){
@@ -146,8 +185,8 @@ describe('batched rendering', function(){
 
     // Mark ComponentB as dirty
     mount.setProps({ text: '3x' }, function(){
-      assert(i === 2);
-      assert(el.innerHTML === "<div>3x Mirror Shield</div>");
+      assert.equal(i, 2);
+      assert.equal(el.innerHTML, "<div><div>3x Mirror Shield</div></div>");
       done();
     });
   });

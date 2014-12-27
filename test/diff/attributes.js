@@ -1,7 +1,8 @@
 var assert = require('component/assert@0.4.0');
 var component = require('/lib/component');
 
-describe('attributes', function(){
+describe('Diffing Attributes', function(){
+
   it('should update attributes', function(done){
     var Page = component({
       render: function(dom, state, props){

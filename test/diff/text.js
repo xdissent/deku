@@ -2,7 +2,7 @@
 var assert = require('component/assert@0.4.0');
 var component = require('/lib/component');
 
-describe('text', function(){
+describe('Diffing Text Nodes', function(){
 
   it('should update text nodes', function(done){
     var Page = component({

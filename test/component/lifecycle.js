@@ -2,7 +2,7 @@
 var assert = require('component/assert@0.4.0');
 var component = require('/lib/component');
 
-describe('lifecycle events', function(){
+describe('Component Lifecycle Hooks', function(){
   it('should fire the `afterMount` hook', function(done){
     var Page = component({
       afterMount: function(){
