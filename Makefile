@@ -45,10 +45,7 @@ test: build.js
 	@duo-test browser -c 'make build.js'
 
 test-cloud: tests.js
-	@zuul \
-	--user deku \
-	--key ea945291-4d2a-445e-a0a6-17d426778869 \
-	-- tests.js
+	@zuul -- tests.js
 
 node_modules: package.json
 	@npm install
