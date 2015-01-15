@@ -51,7 +51,7 @@ node_modules: package.json
 	@npm install
 
 clean:
-	@-rm -rf build.js deku.js
+	@-rm -rf build.js deku.js tests.js
 
 distclean:
 	@-rm -rf components node_modules
@@ -62,7 +62,7 @@ distclean:
 
 .PHONY: lint
 .PHONY: test
-.PHONY: test-saucelabs
+.PHONY: test-cloud
 .PHONY: serve
 .PHONY: clean
 .PHONY: distclean

@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 0.11.13
+    version: 0.11
 test:
   override:
-    - make headless
+    - make test-cloud
