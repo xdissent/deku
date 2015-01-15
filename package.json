@@ -3,12 +3,25 @@
   "version": "0.0.5",
   "description": "Create view components using a virtual DOM",
   "main": "deku.js",
+  "scripts": {
+    "test": "duo -r ./ test/index.js | bfc > tests.js && testling"
+  },
   "devDependencies": {
     "duo": "^0.8.10",
     "duo-test": "^0.3.10",
     "duo-serve": "~0.6.1",
     "jshint": "~2.5.11",
     "bfc": "~0.3.1",
-    "zuul": "~1.16.4"
+    "zuul": "~1.16.4",
+    "mocha": "~2.1.0"
+  },
+  "testling": {
+    "harness": "mocha",
+    "files": "tests.js",
+    "browsers": [
+      "ie/10..latest",
+      "chrome/latest",
+      "firefox/latest"
+    ]
   }
 }
