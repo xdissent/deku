@@ -29,6 +29,7 @@
     "tower-channels": "^1.0.0",
     "get-uid": "^1.0.1",
     "raf-loop": "^1.0.1",
-    "virtualize": "0.0.1"
+    "virtualize": "0.0.1",
+    "array-zip": "^1.0.0"
   }
 }
