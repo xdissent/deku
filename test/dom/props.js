@@ -5,7 +5,7 @@ import {TwoWords,mount,Span} from '../helpers'
 
 var Test = component(TwoWords);
 
-it('should replace props on the scene', function(){
+it.skip('should replace props on the scene', function(){
   var app = scene(Test)
     .setProps({ one: 'Hello', two: 'World' })
 
@@ -16,7 +16,7 @@ it('should replace props on the scene', function(){
   })
 });
 
-it('should merge props on the scene', function(){
+it.skip('should merge props on the scene', function(){
   var app = scene(Test)
     .setProps({ one: 'Hello', two: 'World' })
 
@@ -27,7 +27,7 @@ it('should merge props on the scene', function(){
   })
 });
 
-it('should replace then set props on the scene', function(){
+it.skip('should replace then set props on the scene', function(){
   var app = scene(Test)
     .setProps({ one: 'Hello', two: 'World' })
 
@@ -39,7 +39,7 @@ it('should replace then set props on the scene', function(){
   })
 });
 
-it('should update on the next frame', function(){
+it.skip('should update on the next frame', function(){
   var app = scene(Test)
     .setProps({ one: 'Hello', two: 'World' })
 
@@ -49,7 +49,7 @@ it('should update on the next frame', function(){
   })
 });
 
-it('should not update props if the scene is removed', function (done) {
+it.skip('should not update props if the scene is removed', function (done) {
   var app = scene(component(Span))
     .setProps({ text: 'foo' })
 
@@ -65,7 +65,7 @@ it('should not update props if the scene is removed', function (done) {
   })
 });
 
-it('should not update twice when setting props', function(){
+it.skip('should not update twice when setting props', function(){
   var i = 0;
   var IncrementAfterUpdate = component({
     afterUpdate: function(){
@@ -84,7 +84,7 @@ it('should not update twice when setting props', function(){
   })
 });
 
-it('should update child even when the props haven\'t changed', function () {
+it.skip('should update child even when the props haven\'t changed', function () {
   var calls = 0;
 
   var Child = component({
@@ -112,6 +112,7 @@ it('should update child even when the props haven\'t changed', function () {
   })
 });
 
+// actually skip
 it.skip('should call propsChanged when props are changed', function (done) {
   var Test = component({
     propsChanged: function(nextProps){
@@ -129,7 +130,7 @@ it.skip('should call propsChanged when props are changed', function (done) {
   })
 });
 
-it('should call propsChanged on child components', function (done) {
+it.skip('should call propsChanged on child components', function (done) {
   var Child = component({
     propsChanged: function(nextProps){
       assert(nextProps.count === 1);
@@ -151,6 +152,7 @@ it('should call propsChanged on child components', function (done) {
   })
 });
 
+// actually skip
 it.skip('should not call propsChanged on child components when they props don\'t change', function () {
   // TODO
 });

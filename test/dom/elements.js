@@ -51,7 +51,7 @@ var ComponentToggle = component({
  * be added to the DOM.
  */
 
-it('should add/remove element nodes', function(){
+it.skip('should add/remove element nodes', function(){
   var app = scene(Toggle)
     .setProps({ showChildren: false })
 
@@ -71,7 +71,7 @@ it('should add/remove element nodes', function(){
  * from the DOM that don't exist in the new rendering but leave the existing nodes.
  */
 
-it('should only remove adjacent element nodes', function(){
+it.skip('should only remove adjacent element nodes', function(){
   var app = scene(AdjacentTest)
     .setProps({ i: 1 })
 
@@ -91,7 +91,7 @@ it('should only remove adjacent element nodes', function(){
  * It should change the tag name of element
  */
 
-it('should change tag names', function(){
+it.skip('should change tag names', function(){
   var app = scene(CustomTag)
     .setProps({ type: 'span' })
 
@@ -109,7 +109,7 @@ it('should change tag names', function(){
  * the correct element.
  */
 
-it('should change root node and still update correctly', function(){
+it.skip('should change root node and still update correctly', function(){
   var ComponentA = component({
     render: function(props, state){
       return dom(props.type, null, props.text);
@@ -140,7 +140,7 @@ it('should change root node and still update correctly', function(){
  * node should be recursively removed and unmounted.
  */
 
-it('should unmount components when removing an element node', function(){
+it.skip('should unmount components when removing an element node', function(){
   var i = 0;
   function inc() { i++ }
   var UnmountTest = component({
@@ -179,7 +179,7 @@ it('should unmount components when removing an element node', function(){
  * that is rendered.
  */
 
-it('should change sub-component tag names', function(){
+it.skip('should change sub-component tag names', function(){
   var Test = component({
     render: function(props, state){
       return dom(CustomTag, { type: props.type });
@@ -200,7 +200,7 @@ it('should change sub-component tag names', function(){
  * It should be able to render new components when re-rendering
  */
 
-it('should replace elements with component nodes', function(){
+it.skip('should replace elements with component nodes', function(){
   var Test = component({
     render: function(props, state){
       if (props.showElement) {
@@ -227,7 +227,7 @@ it('should replace elements with component nodes', function(){
  * should be removed and unmount and replaced with the new component
  */
 
-it('should replace components', function(){
+it.skip('should replace components', function(){
   var ComponentA = component({
     render: function(props, state){
       return dom('div', null, ['A']);
@@ -264,7 +264,7 @@ it('should replace components', function(){
  * are moved from the tree.
  */
 
-it('should remove references to child components when they are removed', function(){
+it.skip('should remove references to child components when they are removed', function(){
   var app = scene(ComponentToggle)
     .setProps({ showComponent: true })
 

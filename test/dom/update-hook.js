@@ -14,7 +14,7 @@ var updateMixin = {
   }
 };
 
-it('should fire beforeUpdate', function () {
+it.skip('should fire beforeUpdate', function () {
   var fired = false;
   var Test = component({
     beforeUpdate: function(props, state, nextProps, nextState){
@@ -35,7 +35,7 @@ it('should fire beforeUpdate', function () {
   })
 })
 
-it('should fire afterUpdate', function () {
+it.skip('should fire afterUpdate', function () {
   var fired = false;
   var Test = component({
     afterUpdate: function(props, state, prevProps, prevState){
@@ -56,7 +56,7 @@ it('should fire afterUpdate', function () {
   })
 });
 
-it('should not allow setting the state during beforeUpdate', function (done) {
+it.skip('should not allow setting the state during beforeUpdate', function (done) {
   var Impure = component({
     beforeUpdate: function(){
       this.setState({ foo: 'bar' });
@@ -75,7 +75,7 @@ it('should not allow setting the state during beforeUpdate', function (done) {
   })
 });
 
-it('should only call `beforeUpdate` once', function(){
+it.skip('should only call `beforeUpdate` once', function(){
   var i = 0;
   var Component = component({
     beforeUpdate: function(props, state, nextProps, nextState){

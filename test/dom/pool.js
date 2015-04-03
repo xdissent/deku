@@ -18,7 +18,7 @@ function render(props) {
 
 // Tests.
 
-it('should pool dom nodes', function(){
+it.skip('should pool dom nodes', function(){
   var mounted;
   var Component = component(render)
 
@@ -59,7 +59,7 @@ it('should pool dom nodes', function(){
   assert.deepEqual(mounted.pools, {})
 })
 
-it('should not pool components that have the option disabled', function () {
+it.skip('should not pool components that have the option disabled', function () {
   var Component = component(render)
     .set('disablePooling', true)
 

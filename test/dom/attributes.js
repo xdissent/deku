@@ -10,7 +10,7 @@ var AttrComponent = component(function(props, state){
   return dom('span', attrs);
 });
 
-it('should add/update/remove attributes', function(){
+it.skip('should add/update/remove attributes', function(){
   var app = scene(AttrComponent)
   mount(app, function(el, renderer){
     assert.equal(el.innerHTML, '<span></span>')
@@ -26,7 +26,7 @@ it('should add/update/remove attributes', function(){
   })
 })
 
-it('should not touch the DOM if attributes have not changed', function(){
+it.skip('should not touch the DOM if attributes have not changed', function(){
   var pass = true;
   var app = scene(AttrComponent)
     .setProps({ name: 'Bob' })
@@ -40,7 +40,7 @@ it('should not touch the DOM if attributes have not changed', function(){
   })
 })
 
-it('should update the real value of input fields', function () {
+it.skip('should update the real value of input fields', function () {
   var Input = component({
     render: function(props, state){
       return dom('input', { value: props.value })
@@ -58,7 +58,7 @@ it('should update the real value of input fields', function () {
   })
 })
 
-it('should render innerHTML', function () {
+it.skip('should render innerHTML', function () {
   var Test = component(function(){
     return dom('div', { innerHTML: 'Hello <strong>World</strong>' });
   });
@@ -68,7 +68,7 @@ it('should render innerHTML', function () {
   })
 })
 
-it('should update innerHTML', function () {
+it.skip('should update innerHTML', function () {
   var Test = component(function(props){
     return dom('div', { innerHTML: props.content });
   });

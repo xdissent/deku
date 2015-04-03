@@ -1,7 +1,7 @@
 import assert from 'assert'
 import {component,dom,scene,renderString} from '../../'
 
-it('should render an element', function () {
+it.skip('should render an element', function () {
   var Component = component({
     render: function(props, state){
       return dom('div');
@@ -11,7 +11,7 @@ it('should render an element', function () {
   assert.equal(renderString(app),'<div></div>')
 });
 
-it('should render an element with attributes', function () {
+it.skip('should render an element with attributes', function () {
   var Component = component({
     render: function(props, state){
       return dom('div', { id: 'foo'});
@@ -21,7 +21,7 @@ it('should render an element with attributes', function () {
   assert.equal(renderString(app),'<div id="foo"></div>')
 });
 
-it('should render an element with text', function () {
+it.skip('should render an element with text', function () {
   var Component = component({
     render: function(props, state){
       return dom('div', null, 'foo');
@@ -31,7 +31,7 @@ it('should render an element with text', function () {
   assert.equal(renderString(app),'<div>foo</div>')
 });
 
-it('should render an element with child elements', function () {
+it.skip('should render an element with child elements', function () {
   var Component = component({
     render: function(props, state){
       return dom('div', null, [
@@ -43,7 +43,7 @@ it('should render an element with child elements', function () {
   assert.equal(renderString(app),'<div><span>foo</span></div>')
 });
 
-it('should render an element with child components', function () {
+it.skip('should render an element with child components', function () {
   var Span = component({
     render: function(props, state){
       return dom('span', null, 'foo');
@@ -60,7 +60,7 @@ it('should render an element with child components', function () {
   assert.equal(renderString(app),'<div><span>foo</span></div>')
 });
 
-it('should render an element with component root', function () {
+it.skip('should render an element with component root', function () {
   var Span = component({
     render: function(props, state){
       return dom('span', null, 'foo');
@@ -75,7 +75,7 @@ it('should render an element with component root', function () {
   assert.equal(renderString(app),'<span>foo</span>')
 });
 
-it('should render with props', function () {
+it.skip('should render with props', function () {
   var Component = component({
     render: function(props, state){
       return dom('div', null, [props.text]);
@@ -85,7 +85,7 @@ it('should render with props', function () {
   assert.equal(renderString(app),'<div>foo</div>')
 });
 
-it('should render with initial state', function () {
+it.skip('should render with initial state', function () {
   var Component = component({
     initialState: function(){
       return { text: 'foo' }
@@ -99,7 +99,7 @@ it('should render with initial state', function () {
 });
 
 
-it('should call beforeMount', function (done) {
+it.skip('should call beforeMount', function (done) {
   var Component = component({
     initialState: function(){
       return { text: 'foo' }
@@ -117,7 +117,7 @@ it('should call beforeMount', function (done) {
   renderString(app)
 })
 
-it('should render innerHTML', function () {
+it.skip('should render innerHTML', function () {
   var Component = component({
     render: function(props, state){
       return dom('div', { innerHTML: '<span>foo</span>' });
@@ -127,7 +127,7 @@ it('should render innerHTML', function () {
   assert.equal(renderString(app),'<div><span>foo</span></div>')
 })
 
-it('should render the value of inputs', function () {
+it.skip('should render the value of inputs', function () {
   var Component = component({
     render: function(props, state){
       return dom('input', { value: 'foo' });

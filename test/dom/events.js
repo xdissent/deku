@@ -24,7 +24,7 @@ var Delegate = component({
   }
 });
 
-it('should add click event', function(){
+it.skip('should add click event', function(){
   var count = 0;
   var Page = component({
     render: function(props, state){
@@ -48,7 +48,7 @@ it('should add click event', function(){
   }
 });
 
-it('should remove click event', function(done){
+it.skip('should remove click event', function(done){
   var count = 0;
   var rootEl;
 
@@ -84,7 +84,7 @@ it('should remove click event', function(done){
   }
 });
 
-it('should update click event', function(){
+it.skip('should update click event', function(){
   var count = 0;
 
   var Page = component({
@@ -114,7 +114,7 @@ it('should update click event', function(){
   }
 });
 
-it('should delegate events', function () {
+it.skip('should delegate events', function () {
   var app = scene(Delegate)
 
   mount(app, function(el, renderer){
@@ -130,7 +130,7 @@ it('should delegate events', function () {
   })
 });
 
-it('should delegate events on the root', function () {
+it.skip('should delegate events on the root', function () {
   var DelegateRoot = component({
     onClick: function(event){
       this.setState({ active: true });
@@ -152,7 +152,7 @@ it('should delegate events on the root', function () {
   })
 });
 
-it('should set a delegateTarget', function (done) {
+it.skip('should set a delegateTarget', function (done) {
   var rootEl;
 
   var DelegateRoot = component({
@@ -176,7 +176,7 @@ it('should set a delegateTarget', function (done) {
   })
 });
 
-it('should update events when nested children are removed', function () {
+it.skip('should update events when nested children are removed', function () {
 
   var items = [
     { text: 'one' },

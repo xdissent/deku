@@ -2,7 +2,7 @@ import {mount,div} from '../helpers'
 import {component,render,scene,dom} from '../../'
 import assert from 'assert'
 
-it('should fire the `afterMount` hook', function(done){
+it.skip('should fire the `afterMount` hook', function(done){
   var Page = component({
     afterMount: function(){
       done();
@@ -11,7 +11,7 @@ it('should fire the `afterMount` hook', function(done){
   mount(scene(Page))
 })
 
-it('should fire the `afterUnmount` hook', function(done){
+it.skip('should fire the `afterUnmount` hook', function(done){
   var Page = component({
     afterUnmount: function(){
       done();
@@ -20,7 +20,7 @@ it('should fire the `afterUnmount` hook', function(done){
   mount(scene(Page))
 })
 
-it('should fire the `beforeMount` hook before `mount`', function(){
+it.skip('should fire the `beforeMount` hook before `mount`', function(){
   var pass;
   var Page = component({
     beforeMount: function(){
@@ -34,7 +34,7 @@ it('should fire the `beforeMount` hook before `mount`', function(){
   assert(pass);
 })
 
-it('should fire the `beforeUnmount` hook before `unmount`', function(){
+it.skip('should fire the `beforeUnmount` hook before `unmount`', function(){
   var pass;
   var Page = component({
     beforeUnmount: function(){
@@ -48,7 +48,7 @@ it('should fire the `beforeUnmount` hook before `unmount`', function(){
   assert(pass);
 })
 
-it('should not unmount twice', function(){
+it.skip('should not unmount twice', function(){
   var Page = component()
   var app = scene(Page)
   var el = div()
@@ -58,7 +58,7 @@ it('should not unmount twice', function(){
   document.body.removeChild(el)
 })
 
-it('should fire mount events on sub-components', function(){
+it.skip('should fire mount events on sub-components', function(){
   var i = 0;
 
   function inc() { i++ }
@@ -87,7 +87,7 @@ it('should fire mount events on sub-components', function(){
   })
 });
 
-it('should fire unmount events on sub-components', function(){
+it.skip('should fire unmount events on sub-components', function(){
   var i = 0;
 
   function inc() { i++ }
@@ -115,7 +115,7 @@ it('should fire unmount events on sub-components', function(){
   assert.equal(i, 4)
 });
 
-it('should fire mount events on sub-components created later', function(){
+it.skip('should fire mount events on sub-components created later', function(){
   var calls = 0;
   function inc() { calls++ }
 
@@ -144,7 +144,7 @@ it('should fire mount events on sub-components created later', function(){
   })
 });
 
-it('should fire unmount events on sub-components created later', function(){
+it.skip('should fire unmount events on sub-components created later', function(){
   var calls = 0;
   function inc() { calls++ }
 

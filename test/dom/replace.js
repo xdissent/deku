@@ -10,7 +10,7 @@ var Toggle = component({
   }
 });
 
-it('should replace elements with text elements', function(){
+it.skip('should replace elements with text elements', function(){
   var app = scene(Toggle)
     .setProps({ showElement: true })
 
@@ -22,7 +22,7 @@ it('should replace elements with text elements', function(){
   })
 });
 
-it('should replace text nodes with elements', function(){
+it.skip('should replace text nodes with elements', function(){
   var app = scene(Toggle)
     .setProps({ showElement: false, showText: true })
 

@@ -15,7 +15,7 @@ var StateChangeOnMount = component({
   }
 });
 
-it('should update components when state changes', function(){
+it.skip('should update components when state changes', function(){
   var app = scene(StateChangeOnMount)
   mount(app, function(el, renderer){
     assert.equal(el.innerHTML, '<span>foo</span>');
@@ -24,7 +24,7 @@ it('should update components when state changes', function(){
   })
 });
 
-it('should update composed components when state changes', function(){
+it.skip('should update composed components when state changes', function(){
   var Composed = component({
     afterUpdate: function(){
       throw new Error('Parent should not be updated');
