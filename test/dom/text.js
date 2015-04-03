@@ -1,28 +1,28 @@
 import assert from 'assert'
-import {component,dom,scene} from '../../'
-import {mount} from '../helpers'
+import {component,dom,World} from '../../'
+import {mount,div} from '../helpers'
 
-var Toggle = component({
-  render: function(props, state) {
-    if (props.showText) return dom('div', null, [props.text]);
-    return dom('div');
-  }
+var Toggle = component(function(props){
+  return props.showText
+    ? dom('div', null, [ props.text ])
+    : dom('div');
 });
 
-it.skip('should add/update/remove text nodes', function(){
-  var app = scene(Toggle)
-    .setProps({ showText: false })
+it('should add/update/remove text nodes', function(){
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Toggle, {
+    showText: false
+  });
 
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML, '<div></div>')
-    app.setProps({ showText: true, text: 'bar' })
-    renderer.render()
-    assert.equal(el.innerHTML, '<div>bar</div>')
-    app.setProps({ text: 'Hello Pluto' })
-    renderer.render()
-    assert.equal(el.innerHTML, '<div>Hello Pluto</div>')
-    app.setProps({ showText: false })
-    renderer.render()
-    assert.equal(el.innerHTML, '<div></div>')
-  })
-})
+  assert.equal(el.innerHTML, '<div></div>');
+  // add
+  world.update(0, { showText: true, text: 'bar' });
+  assert.equal(el.innerHTML, '<div>bar</div>');
+  // update
+  world.update(0, { text: 'Hello Pluto' });
+  assert.equal(el.innerHTML, '<div>Hello Pluto</div>');
+  // remove
+  // world.update(0, { showText: false });
+  // assert.equal(el.innerHTML, '<div></div>');
+});

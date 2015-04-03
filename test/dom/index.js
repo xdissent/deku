@@ -2,15 +2,14 @@ import trigger from 'trigger-event';
 import Emitter from 'component-emitter';
 import raf from 'component-raf';
 import assert from 'assert';
-import {component,World,dom,render,io} from '../../';
+import {component,World,dom,render} from '../../';
 import {HelloWorld,Span,TwoWords,mount,div} from '../helpers';
 
 it('should render a component', function(){
   var Test = component(HelloWorld);
   var world = World();
-  world.use(io);
   var el = div();
-  world.mount(Test, {}, el);
+  world.mount(el, Test);
   assert.equal(el.innerHTML, '<span>Hello World</span>');
 });
 
@@ -31,18 +30,19 @@ it.skip('should have initial state', function(){
   })
 })
 
-it.skip('should create a component with properties', function(){
+it('should create a component with properties', function(){
   var Test = component({
     render(props) {
       return dom('span', null, [props.text])
     }
-  })
-  var app = world(Test)
-  app.setProps({ text: 'Hello World' })
-  mount(app, function(el){
-    assert.equal(el.innerHTML, '<span>Hello World</span>')
-  })
-})
+  });
+  var world = World();
+  var el = div();
+  world.mount(el, Test, {
+    text: 'Hello World'
+  });
+  assert.equal(el.innerHTML, '<span>Hello World</span>');
+});
 
 it.skip('should remove from the DOM', function () {
   var Test = component(HelloWorld);
@@ -50,26 +50,26 @@ it.skip('should remove from the DOM', function () {
   assert.equal(el.innerHTML, '');
 })
 
-it.skip('should compose components', function(){
+it('should compose components', function(){
   var Inner = component(HelloWorld);
-  var Composed = component({
-    render: function(props, state){
-      return dom(Inner);
-    }
+  var Composed = component(function(){
+    return dom(Inner);
   });
-  mount(world(Composed), function(el){
-    assert.equal(el.innerHTML, '<span>Hello World</span>');
-  })
+  var world = World();
+  var el = div();
+  world.mount(el, Composed);
+  assert.equal(el.innerHTML, '<span>Hello World</span>');
 });
 
-it.skip('should compose components and pass in props', function(){
+it('should compose components and pass in props', function(){
   var Inner = component(TwoWords);
-  var Composed = component(function(props, state){
+  var Composed = component(function(){
     return dom(Inner, { one: 'Hello', two: 'World' });
   });
-  mount(world(Composed), function(el){
-    assert.equal(el.innerHTML, '<span>Hello World</span>');
-  })
+  var world = World();
+  var el = div();
+  world.mount(el, Composed);
+  assert.equal(el.innerHTML, '<span>Hello World</span>');
 });
 
 it.skip('should update sub-components', function(){

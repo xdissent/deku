@@ -1,8 +1,8 @@
 import trigger from 'trigger-event'
 import raf from 'component-raf'
 import assert from 'assert'
-import {component,dom,scene} from '../../'
-import {mount} from '../helpers'
+import {component,dom,World} from '../../'
+import {mount,div} from '../helpers'
 
 var AttrComponent = component(function(props, state){
   var attrs = {};
@@ -11,7 +11,7 @@ var AttrComponent = component(function(props, state){
 });
 
 it.skip('should add/update/remove attributes', function(){
-  var app = scene(AttrComponent)
+  var app = World(AttrComponent)
   mount(app, function(el, renderer){
     assert.equal(el.innerHTML, '<span></span>')
     app.setProps({ name: 'Bob' })
@@ -28,7 +28,7 @@ it.skip('should add/update/remove attributes', function(){
 
 it.skip('should not touch the DOM if attributes have not changed', function(){
   var pass = true;
-  var app = scene(AttrComponent)
+  var app = World(AttrComponent)
     .setProps({ name: 'Bob' })
   mount(app, function(el, renderer){
     el.setAttribute = function(){
@@ -40,14 +40,14 @@ it.skip('should not touch the DOM if attributes have not changed', function(){
   })
 })
 
-it.skip('should update the real value of input fields', function () {
+it.skip('should update the real value of input fields', function(){
   var Input = component({
     render: function(props, state){
       return dom('input', { value: props.value })
     }
   });
 
-  var app = scene(Input)
+  var app = World(Input)
     .setProps({ value: 'Bob' })
 
   mount(app, function(el, renderer){
@@ -58,22 +58,22 @@ it.skip('should update the real value of input fields', function () {
   })
 })
 
-it.skip('should render innerHTML', function () {
+it('should render innerHTML', function(){
   var Test = component(function(){
     return dom('div', { innerHTML: 'Hello <strong>World</strong>' });
   });
-  var app = scene(Test)
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML,'<div>Hello <strong>World</strong></div>')
-  })
-})
+  var world = World();
+  var el = div();
+  world.mount(el, Test);
+  assert.equal(el.innerHTML,'<div>Hello <strong>World</strong></div>');
+});
 
-it.skip('should update innerHTML', function () {
+it.skip('should update innerHTML', function(){
   var Test = component(function(props){
     return dom('div', { innerHTML: props.content });
   });
 
-  var app = scene(Test)
+  var app = World(Test)
     .setProps({ content: 'Hello <strong>World</strong>' })
 
   mount(app, function(el, renderer){
