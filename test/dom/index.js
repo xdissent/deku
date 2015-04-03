@@ -44,7 +44,7 @@ it('should create a component with properties', function(){
   assert.equal(el.innerHTML, '<span>Hello World</span>');
 });
 
-it.skip('should remove from the DOM', function () {
+it.skip('should remove from the DOM', function(){
   var Test = component(HelloWorld);
   var el = mount(world(Test));
   assert.equal(el.innerHTML, '');
@@ -72,93 +72,78 @@ it('should compose components and pass in props', function(){
   assert.equal(el.innerHTML, '<span>Hello World</span>');
 });
 
-it.skip('should update sub-components', function(){
+it('should update sub-components', function(){
   var Inner = component(TwoWords);
-  var Composed = component(function(props, state){
+  var Composed = component(function(props){
     return dom('div', null, [
       dom(Inner, { one: 'Hello', two: props.world })
     ]);
   });
-  var app = world(Composed);
-  var el = document.createElement('div');
-  document.body.appendChild(el);
-  var mount = render(app, el);
-  app.setProps({ world: 'Pluto' });
-  mount.render();
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Composed, {
+    world: 'Earth'
+  });
+  assert.equal(el.innerHTML, '<div><span>Hello Earth</span></div>');
+  world.update({ world: 'Pluto' });
   assert.equal(el.innerHTML, '<div><span>Hello Pluto</span></div>');
-  mount.remove();
-  document.body.removeChild(el);
 });
 
-it.skip('should allow components to have child nodes', function () {
-  var ComponentA = component({
-    render: function(props, state){
-      return dom('div', null, props.children);
-    }
+it('should allow components to have child nodes', function(){
+  var ComponentA = component(function(props){
+    return dom('div', null, props.children);
   });
-  var ComponentB = component({
-    render: function(props, state){
-      return ComponentA(null, [
-        dom('span', null, 'Hello World!')
-      ]);
-    }
+  var ComponentB = component(function(props){
+    return dom(ComponentA, null, [
+      dom('span', null, 'Hello World!')
+    ]);
   });
-  var app = world(ComponentB);
-  mount(app, function(el){
-    assert.equal(el.innerHTML, '<div><span>Hello World!</span></div>');
-  })
+  var world = World();
+  var el = div();
+  world.mount(el, ComponentB);
+  assert.equal(el.innerHTML, '<div><span>Hello World!</span></div>');
 });
 
-it.skip('should update component child nodes', function () {
-  var ComponentA = component({
-    render: function(props, state){
-      return dom('div', null, props.children);
-    }
+it('should update component child nodes', function(){
+  var ComponentA = component(function(props){
+    return dom('div', null, props.children);
   });
-  var ComponentB = component({
-    render: function(props, state){
-      return ComponentA(null, [
-        dom('span', null, props.text)
-      ]);
-    }
+  var ComponentB = component(function(props){
+    return dom(ComponentA, null, [
+      dom('span', null, props.text)
+    ]);
   });
-  var app = world(ComponentB);
-  mount(app, function(el, rendered){
-    app.setProps({ text: 'Hello Pluto!' })
-    rendered.render()
-    assert.equal(el.innerHTML, '<div><span>Hello Pluto!</span></div>')
-  })
+
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, ComponentB);
+  world.update({ text: 'Hello Pluto!' });
+  assert.equal(el.innerHTML, '<div><span>Hello Pluto!</span></div>');
 });
 
-it.skip('should allow components to have other components as child nodes', function () {
-  var ComponentA = component({
-    render: function(props, state){
-      return dom('div', { name: 'ComponentA' }, props.children);
-    }
+it('should allow components to have other components as child nodes', function(){
+  var ComponentA = component(function(props){
+    return dom('div', { name: 'ComponentA' }, props.children);
   });
-  var ComponentC = component({
-    render: function(props, state){
-      return dom('div', { name: 'ComponentC' }, props.children);
-    }
+  var ComponentC = component(function(props){
+    return dom('div', { name: 'ComponentC' }, props.children);
   });
-  var ComponentB = component({
-    render: function(props, state){
-      return dom('div', { name: 'ComponentB' }, [
-        ComponentA(null, [
-          ComponentC({ text: props.text }, [
-            dom('span', null, 'Hello Pluto!')
-          ])
+  var ComponentB = component(function(props, state){
+    return dom('div', { name: 'ComponentB' }, [
+      dom(ComponentA, null, [
+        dom(ComponentC, { text: props.text }, [
+          dom('span', null, 'Hello Pluto!')
         ])
-      ]);
-    }
+      ])
+    ]);
   });
 
-  var app = world(ComponentB)
-    .setProps({ text: 'Hello World!' })
-
-  mount(app, function(el){
-    assert.equal(el.innerHTML, '<div name="ComponentB"><div name="ComponentA"><div name="ComponentC"><span>Hello Pluto!</span></div></div></div>');
-  })
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, ComponentB, {
+    text: 'Hello World!'
+  });
+  assert.equal(el.innerHTML, '<div name="ComponentB"><div name="ComponentA"><div name="ComponentC"><span>Hello Pluto!</span></div></div></div>');
 });
 
 it.skip('should only update ONCE when props/state is changed in different parts of the tree', function(){
@@ -225,7 +210,7 @@ it.skip('should invalidate itself so it is updated on the next frame anyway', fu
   })
 });
 
-it.skip('should only update if shouldUpdate returns true', function () {
+it.skip('should only update if shouldUpdate returns true', function(){
   var i = 0;
   var Component = component({
     afterUpdate(){
