@@ -23,6 +23,6 @@ it('should add/update/remove text nodes', function(){
   world.update(0, { text: 'Hello Pluto' });
   assert.equal(el.innerHTML, '<div>Hello Pluto</div>');
   // remove
-  // world.update(0, { showText: false });
-  // assert.equal(el.innerHTML, '<div></div>');
+  world.update(0, { showText: false });
+  assert.equal(el.innerHTML, '<div></div>');
 });
