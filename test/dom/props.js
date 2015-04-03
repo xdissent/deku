@@ -1,7 +1,7 @@
 import raf from 'component-raf'
 import assert from 'assert'
-import {component,dom,scene} from '../../'
-import {TwoWords,mount,Span} from '../helpers'
+import {component,dom,World} from '../../'
+import {TwoWords,mount,Span,div} from '../helpers'
 
 var Test = component(TwoWords);
 
@@ -39,14 +39,21 @@ it.skip('should replace then set props on the scene', function(){
   })
 });
 
-it.skip('should update on the next frame', function(){
-  var app = scene(Test)
-    .setProps({ one: 'Hello', two: 'World' })
+it('should update on the next frame', function(done){
+  var world = World();
+  var el = div();
+  world.mount(el, Test, {
+    one: 'Hello',
+    two: 'World'
+  });
 
-  mount(app, function(el, renderer){
-    app.setProps({ one: 'Hello', two: 'Pluto' });
-    assert.equal(el.innerHTML, '<span>Hello World</span>')
-  })
+  world.update(0, { one: 'Hello', two: 'Pluto' });
+  assert.equal(el.innerHTML, '<span>Hello World</span>');
+
+  requestAnimationFrame(function(){
+    assert.equal(el.innerHTML, '<span>Hello Pluto</span>');
+    done();
+  });
 });
 
 it.skip('should not update props if the scene is removed', function (done) {
@@ -84,32 +91,28 @@ it.skip('should not update twice when setting props', function(){
   })
 });
 
-it.skip('should update child even when the props haven\'t changed', function () {
+it('should update child even when the parent props haven\'t changed', function(){
   var calls = 0;
 
-  var Child = component({
-    render: function(props, state){
-      calls++;
-      return dom('span', null, [props.text]);
-    }
+  var Child = component(function(props){
+    calls++;
+    return dom('span', null, [ props.text ]);
   });
 
-  var Parent = component({
-    render: function(props, state){
-      return dom('div', { name: props.character }, [
-        dom(Child, { text: 'foo' })
-      ]);
-    }
+  var Parent = component(function(props){
+    return dom('div', { name: props.character }, [
+      dom(Child, { text: 'foo' })
+    ]);
   });
 
-  var app = scene(Parent)
-    .setProps({ character: 'Link' })
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Parent, {
+    character: 'Link'
+  });
 
-  mount(app, function(el, renderer){
-    app.setProps({ character: 'Zelda' });
-    renderer.render();
-    assert.equal(calls, 2);
-  })
+  world.update(0, { character: 'Zelda' });
+  assert.equal(calls, 2);
 });
 
 // actually skip
@@ -153,6 +156,6 @@ it.skip('should call propsChanged on child components', function (done) {
 });
 
 // actually skip
-it.skip('should not call propsChanged on child components when they props don\'t change', function () {
+it.skip('should not call propsChanged on child components when they props don\'t change', function(){
   // TODO
 });
