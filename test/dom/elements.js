@@ -1,48 +1,34 @@
 import assert from 'assert'
-import {component,dom,scene} from '../../'
-import {mount} from '../helpers'
+import {component,dom,World} from '../../'
+import {mount,div} from '../helpers'
 
 /**
  * Custom components used for testing
  */
 
-var Toggle = component({
-  render: function(props, state){
-    if (!props.showChildren) {
-      return dom('div');
-    } else {
-      return dom('div', null, [dom('span', { id: 'foo' })]);
-    }
-  }
+var Toggle = component(function(props){
+  return props.showChildren
+    ? dom('div', null, [dom('span', { id: 'foo' })])
+    : dom('div');
 });
 
-var CustomTag = component({
-  render: function(props, state){
-    return dom(props.type);
-  }
+var CustomTag = component(function(props){
+  return dom(props.type);
 });
 
-var AdjacentTest = component({
-  render: function(props, state){
-    if (props.i === 1) return dom('div', { id: 'root' }, [dom('span', { id: 'foo' }), dom('span', { id: 'bar' }), dom('span', { id: 'baz' })]);
-    if (props.i === 2) return dom('div', { id: 'root' }, [dom('span', { id: 'foo' })]);
-  }
+var AdjacentTest = component(function(props){
+  if (props.i === 1) return dom('div', { id: 'root' }, [dom('span', { id: 'foo' }), dom('span', { id: 'bar' }), dom('span', { id: 'baz' })]);
+  if (props.i === 2) return dom('div', { id: 'root' }, [dom('span', { id: 'foo' })]);
 });
 
-var BasicComponent = component({
-  render: function(props, state){
-    return dom('div', null, ['component']);
-  }
+var BasicComponent = component(function(props){
+  return dom('div', null, ['component']);
 });
 
-var ComponentToggle = component({
-  render: function(props, state){
-    if (!props.showComponent) {
-      return dom('span');
-    } else {
-      return dom(BasicComponent);
-    }
-  }
+var ComponentToggle = component(function(props){
+  return props.showComponent
+    ? dom(BasicComponent)
+    : dom('span');
 });
 
 /**
@@ -51,19 +37,18 @@ var ComponentToggle = component({
  * be added to the DOM.
  */
 
-it.skip('should add/remove element nodes', function(){
-  var app = scene(Toggle)
-    .setProps({ showChildren: false })
+it('should add/remove element nodes', function(){
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Toggle, {
+    showChildren: false
+  });
 
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML, '<div></div>')
-    app.setProps({ showChildren: true })
-    renderer.render()
-    assert.equal(el.innerHTML, '<div><span id="foo"></span></div>')
-    app.setProps({ showChildren: false })
-    renderer.render()
-    assert.equal(el.innerHTML, '<div></div>')
-  })
+  assert.equal(el.innerHTML, '<div></div>');
+  world.update({ showChildren: true });
+  assert.equal(el.innerHTML, '<div><span id="foo"></span></div>');
+  world.update({ showChildren: false });
+  assert.equal(el.innerHTML, '<div></div>');
 });
 
 /**
@@ -71,36 +56,36 @@ it.skip('should add/remove element nodes', function(){
  * from the DOM that don't exist in the new rendering but leave the existing nodes.
  */
 
-it.skip('should only remove adjacent element nodes', function(){
-  var app = scene(AdjacentTest)
-    .setProps({ i: 1 })
+it('should only remove adjacent element nodes', function(){
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, AdjacentTest, {
+    i: 1
+  });
 
-  mount(app, function(el, renderer){
-    assert(document.querySelector('#foo'));
-    assert(document.querySelector('#bar'));
-    assert(document.querySelector('#baz'));
-    app.setProps({ i: 2 });
-    renderer.render();
-    assert(document.querySelector('#foo'));
-    assert(document.querySelector('#bar') == null);
-    assert(document.querySelector('#baz') == null);
-  })
-})
+  assert(document.querySelector('#foo'));
+  assert(document.querySelector('#bar'));
+  assert(document.querySelector('#baz'));
+  world.update({ i: 2 });
+  assert(document.querySelector('#foo'));
+  assert(document.querySelector('#bar') == null);
+  assert(document.querySelector('#baz') == null);
+});
 
 /**
- * It should change the tag name of element
+ * It should change the tag name of element.
  */
 
-it.skip('should change tag names', function(){
-  var app = scene(CustomTag)
-    .setProps({ type: 'span' })
+it('should change tag names', function(){
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, CustomTag, {
+    type: 'span'
+  });
 
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML, '<span></span>');
-    app.setProps({ type: 'div' });
-    renderer.render();
-    assert.equal(el.innerHTML, '<div></div>');
-  })
+  assert.equal(el.innerHTML, '<span></span>');
+  world.update({ type: 'div' });
+  assert.equal(el.innerHTML, '<div></div>');
 });
 
 /**
@@ -109,30 +94,26 @@ it.skip('should change tag names', function(){
  * the correct element.
  */
 
-it.skip('should change root node and still update correctly', function(){
-  var ComponentA = component({
-    render: function(props, state){
-      return dom(props.type, null, props.text);
-    }
+it('should change root node and still update correctly', function(){
+  var ComponentA = component(function(props){
+    return dom(props.type, null, props.text);
   });
-  var Test = component({
-    render: function(props, state){
-      return dom(ComponentA, { type: props.type, text: props.text });
-    }
+  var Test = component(function(props){
+    return dom(ComponentA, { type: props.type, text: props.text });
   });
 
-  var app = scene(Test)
-    .setProps({ type: 'span', text: 'test' })
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Test, {
+    type: 'span',
+    text: 'test'
+  });
 
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML, '<span>test</span>');
-    app.setProps({ type: 'div', text: 'test' });
-    renderer.render()
-    assert.equal(el.innerHTML, '<div>test</div>');
-    app.setProps({ type: 'div', text: 'foo' });
-    renderer.render()
-    assert.equal(el.innerHTML, '<div>foo</div>');
-  })
+  assert.equal(el.innerHTML, '<span>test</span>');
+  world.update({ type: 'div', text: 'test' });
+  assert.equal(el.innerHTML, '<div>test</div>');
+  world.update({ type: 'div', text: 'foo' });
+  assert.equal(el.innerHTML, '<div>foo</div>');
 });
 
 /**
@@ -179,47 +160,42 @@ it.skip('should unmount components when removing an element node', function(){
  * that is rendered.
  */
 
-it.skip('should change sub-component tag names', function(){
-  var Test = component({
-    render: function(props, state){
-      return dom(CustomTag, { type: props.type });
-    }
+it('should change sub-component tag names', function(){
+  var Test = component(function(props){
+    return dom(CustomTag, { type: props.type });
   });
 
-  var app = scene(Test)
-    .setProps({ type: 'span' })
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Test, {
+    type: 'span'
+  });
 
-  mount(app, function(el, renderer){
-    app.setProps({ type: 'div' });
-    renderer.render();
-    assert.equal(el.innerHTML, '<div></div>');
-  })
+  assert.equal(el.innerHTML, '<span></span>');
+  world.update({ type: 'div' });
+  assert.equal(el.innerHTML, '<div></div>');
 });
 
 /**
  * It should be able to render new components when re-rendering
  */
 
-it.skip('should replace elements with component nodes', function(){
-  var Test = component({
-    render: function(props, state){
-      if (props.showElement) {
-        return dom('span', null, ['element']);
-      } else {
-        return dom(BasicComponent);
-      }
-    }
+it('should replace elements with component nodes', function(){
+  var Test = component(function(props){
+    return props.showElement
+      ? dom('span', null, ['element'])
+      : dom(BasicComponent);
   });
 
-  var app = scene(Test)
-    .setProps({ showElement: true })
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Test, {
+    showElement: true
+  });
 
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML, '<span>element</span>');
-    app.setProps({ showElement: false });
-    renderer.render()
-    assert.equal(el.innerHTML, '<div>component</div>');
-  })
+  assert.equal(el.innerHTML, '<span>element</span>');
+  world.update({ showElement: false });
+  assert.equal(el.innerHTML, '<div>component</div>');
 });
 
 /**
@@ -228,36 +204,32 @@ it.skip('should replace elements with component nodes', function(){
  */
 
 it.skip('should replace components', function(){
-  var ComponentA = component({
-    render: function(props, state){
-      return dom('div', null, ['A']);
-    }
+  var ComponentA = component(function(props){
+    return dom('div', null, ['A']);
   });
-  var ComponentB = component({
-    render: function(props, state){
-      return dom('div', null, ['B']);
-    }
+  var ComponentB = component(function(props){
+    return dom('div', null, ['B']);
   });
-  var ComponentC = component({
-    render: function(props, state){
-      if (props.type === 'A') return dom(ComponentA);
-      return dom(ComponentB);
-    }
+  var ComponentC = component(function(props){
+    return props.type === 'A'
+      ? dom(ComponentA)
+      : dom(ComponentB);
   });
 
-  var app = scene(ComponentC)
-    .setProps({ type: 'A' })
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, ComponentC, {
+    type: 'A'
+  });
 
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML, '<div>A</div>')
-    app.setProps({ type: 'B' })
-    renderer.render()
-    assert.equal(el.innerHTML, '<div>B</div>')
-    var childId = renderer.children[app.root.id]['0'];
-    var entity = renderer.entities[childId];
-    assert(entity.component instanceof ComponentB);
-  })
-})
+  assert.equal(el.innerHTML, '<div>A</div>');
+  world.update({ type: 'B' });
+  assert.equal(el.innerHTML, '<div>B</div>')
+  // TODO
+  // var childId = renderer.children[app.root.id]['0'];
+  // var entity = renderer.entities[childId];
+  // assert(entity.component instanceof ComponentB);
+});
 
 /**
  * It should remove components from the children hash when they
