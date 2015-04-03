@@ -1,15 +1,19 @@
 import {mount,div} from '../helpers'
-import {component,render,scene,dom} from '../../'
+import {component,render,World,dom} from '../../'
 import assert from 'assert'
 
-it.skip('should fire the `afterMount` hook', function(done){
+it('should fire the `afterMount` hook', function(){
+  var called;
   var Page = component({
     afterMount: function(){
-      done();
+      called = true;
     }
   });
-  mount(scene(Page))
-})
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Page);
+  assert(called);
+});
 
 it.skip('should fire the `afterUnmount` hook', function(done){
   var Page = component({
@@ -20,32 +24,36 @@ it.skip('should fire the `afterUnmount` hook', function(done){
   mount(scene(Page))
 })
 
-it.skip('should fire the `beforeMount` hook before `mount`', function(){
-  var pass;
+it('should fire the `beforeMount` hook before `mount`', function(){
+  var calls = [];
   var Page = component({
     beforeMount: function(){
-      pass = false;
+      calls.push('beforeMount');
     },
     afterMount: function(){
-      pass = true;
+      calls.push('afterMount');
     }
   });
-  mount(scene(Page))
-  assert(pass);
-})
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Page);
+  assert.deepEqual(calls, [ 'beforeMount', 'afterMount' ]);
+});
 
 it.skip('should fire the `beforeUnmount` hook before `unmount`', function(){
-  var pass;
+  var calls = [];
   var Page = component({
     beforeUnmount: function(){
-      pass = false;
+      calls.push('beforeUnmount');
     },
     afterUnmount: function(){
-      pass = true;
+      calls.push('afterUnmount');
     }
   });
-  mount(scene(Page))
-  assert(pass);
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Page);
+  assert.deepEqual(calls, [ 'beforeUnmount', 'afterUnmount' ]);
 })
 
 it.skip('should not unmount twice', function(){
@@ -66,25 +74,26 @@ it.skip('should fire mount events on sub-components', function(){
   var ComponentA = component({
     afterMount: inc,
     beforeMount: inc,
-    render: function(props, state){
-      return dom('span', { name: props.name }, [props.text]);
+    render: function(props){
+      return dom('span', { name: props.name }, [ props.text ]);
     }
   });
 
   var ComponentB = component({
     afterMount: inc,
     beforeMount: inc,
-    render: function(props, state){
+    render: function(props){
       return dom(ComponentA, { text: 'foo', name: props.name });
     }
   });
 
-  var app = scene(ComponentB)
-  app.setProps({ name: 'Bob' })
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, ComponentB, {
+    name: 'Bob'
+  });
 
-  mount(app, function(){
-    assert.equal(i, 4);
-  })
+  assert.equal(i, 4);
 });
 
 it.skip('should fire unmount events on sub-components', function(){
