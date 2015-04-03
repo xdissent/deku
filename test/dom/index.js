@@ -2,16 +2,17 @@ import trigger from 'trigger-event';
 import Emitter from 'component-emitter';
 import raf from 'component-raf';
 import assert from 'assert';
-import {component,scene,dom,render} from '../../';
+import {component,World,dom,render,io} from '../../';
 import {HelloWorld,Span,TwoWords,mount,div} from '../helpers';
 
-it.skip('should render a component', function(){
-  var Test = component(HelloWorld)
-  var app = scene(Test)
-  mount(app, function(el){
-    assert.equal(el.innerHTML, '<span>Hello World</span>')
-  })
-})
+it('should render a component', function(){
+  var Test = component(HelloWorld);
+  var world = World();
+  world.use(io);
+  var el = div();
+  world.mount(Test, {}, el);
+  assert.equal(el.innerHTML, '<span>Hello World</span>');
+});
 
 it.skip('should have initial state', function(){
   var DefaultState = component({
@@ -24,7 +25,7 @@ it.skip('should have initial state', function(){
       return dom('span', null, state.text);
     }
   });
-  var app = scene(DefaultState)
+  var app = world(DefaultState)
   mount(app, function(el, renderer){
     assert.equal(el.innerHTML, '<span>Hello World</span>')
   })
@@ -36,7 +37,7 @@ it.skip('should create a component with properties', function(){
       return dom('span', null, [props.text])
     }
   })
-  var app = scene(Test)
+  var app = world(Test)
   app.setProps({ text: 'Hello World' })
   mount(app, function(el){
     assert.equal(el.innerHTML, '<span>Hello World</span>')
@@ -45,7 +46,7 @@ it.skip('should create a component with properties', function(){
 
 it.skip('should remove from the DOM', function () {
   var Test = component(HelloWorld);
-  var el = mount(scene(Test));
+  var el = mount(world(Test));
   assert.equal(el.innerHTML, '');
 })
 
@@ -56,7 +57,7 @@ it.skip('should compose components', function(){
       return dom(Inner);
     }
   });
-  mount(scene(Composed), function(el){
+  mount(world(Composed), function(el){
     assert.equal(el.innerHTML, '<span>Hello World</span>');
   })
 });
@@ -66,7 +67,7 @@ it.skip('should compose components and pass in props', function(){
   var Composed = component(function(props, state){
     return dom(Inner, { one: 'Hello', two: 'World' });
   });
-  mount(scene(Composed), function(el){
+  mount(world(Composed), function(el){
     assert.equal(el.innerHTML, '<span>Hello World</span>');
   })
 });
@@ -78,7 +79,7 @@ it.skip('should update sub-components', function(){
       dom(Inner, { one: 'Hello', two: props.world })
     ]);
   });
-  var app = scene(Composed);
+  var app = world(Composed);
   var el = document.createElement('div');
   document.body.appendChild(el);
   var mount = render(app, el);
@@ -102,7 +103,7 @@ it.skip('should allow components to have child nodes', function () {
       ]);
     }
   });
-  var app = scene(ComponentB);
+  var app = world(ComponentB);
   mount(app, function(el){
     assert.equal(el.innerHTML, '<div><span>Hello World!</span></div>');
   })
@@ -121,7 +122,7 @@ it.skip('should update component child nodes', function () {
       ]);
     }
   });
-  var app = scene(ComponentB);
+  var app = world(ComponentB);
   mount(app, function(el, rendered){
     app.setProps({ text: 'Hello Pluto!' })
     rendered.render()
@@ -152,7 +153,7 @@ it.skip('should allow components to have other components as child nodes', funct
     }
   });
 
-  var app = scene(ComponentB)
+  var app = world(ComponentB)
     .setProps({ text: 'Hello World!' })
 
   mount(app, function(el){
@@ -189,7 +190,7 @@ it.skip('should only update ONCE when props/state is changed in different parts 
     }
   });
 
-  var app = scene(ComponentB)
+  var app = world(ComponentB)
   app.setProps({ text: '2x' })
 
   mount(app, function(el, rendered){
@@ -217,7 +218,7 @@ it.skip('should invalidate itself so it is updated on the next frame anyway', fu
       done();
     }
   });
-  var app = scene(Invalidate)
+  var app = world(Invalidate)
   mount(app, function(el, rendered){
     trigger(el.querySelector('span'), 'click')
     rendered.render()
@@ -238,7 +239,7 @@ it.skip('should only update if shouldUpdate returns true', function () {
     }
   });
 
-  var app = scene(Component)
+  var app = world(Component)
   mount(app, function(el, rendered){
     app.setProps({ foo: 'bar' });
     rendered.render();
@@ -255,7 +256,7 @@ it.skip('should not allow setting the state during render', function (done) {
     return dom();
   });
   try {
-    var app = scene(Impure)
+    var app = world(Impure)
     mount(app)
   } catch(e) {
     return done();

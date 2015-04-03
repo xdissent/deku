@@ -3,19 +3,19 @@ import assert from 'assert';
 import {component,dom} from '../../';
 import {Span} from '../helpers';
 
-it('should define a component', function(){
+it.skip('should define a component', function(){
   var Test = component();
   assert(type(Test) === 'function')
 })
 
-it('should create a component with just a render function', function () {
+it.skip('should create a component with just a render function', function () {
   var Test = component(function(){
     return dom('span');
   })
   assert(Test.prototype.render)
 })
 
-it('should mixin plugins when they are objects', function () {
+it.skip('should mixin plugins when they are objects', function () {
   var plugin = {
     render: function() {
       return dom('span');
@@ -26,7 +26,7 @@ it('should mixin plugins when they are objects', function () {
   assert(Test.prototype.render)
 })
 
-it('should call plugins when they are functions', function (done) {
+it.skip('should call plugins when they are functions', function (done) {
   var Test;
   function plugin(Component) {
     assert.equal(Component, Test);
@@ -36,7 +36,7 @@ it('should call plugins when they are functions', function (done) {
   Test.use(plugin);
 })
 
-it('should bind `this` to any method', function(done){
+it.skip('should bind `this` to any method', function(done){
   var Page = component({
     hack: function(){
       assert(this instanceof Page);
@@ -47,7 +47,7 @@ it('should bind `this` to any method', function(done){
   page.hack()
 })
 
-it('should compose without needing to use dom object', function () {
+it.skip('should compose without needing to use dom object', function () {
   var Component = component()
   var vnode = Component({ text: 'foo' })
   assert.equal(vnode.type, 'component')

@@ -1,5 +1,5 @@
 
-describe('component', function(){
+describe.skip('component', function(){
   require('./component')
 })
 
