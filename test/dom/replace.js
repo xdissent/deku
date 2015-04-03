@@ -1,36 +1,34 @@
 import assert from 'assert'
-import {component,dom,scene} from '../../'
-import {mount} from '../helpers'
+import {component,dom,World} from '../../'
+import {mount,div} from '../helpers'
 
-var Toggle = component({
-  render: function(props, state) {
-    if (props.showElement) return dom('div', null, [dom('span')]);
-    if (props.showText) return dom('div', null, ['bar']);
-    return dom('div');
-  }
+var Toggle = component(function(props){
+  if (props.showElement) return dom('div', null, [dom('span')]);
+  if (props.showText) return dom('div', null, ['bar']);
+  return dom('div');
 });
 
-it.skip('should replace elements with text elements', function(){
-  var app = scene(Toggle)
-    .setProps({ showElement: true })
+it('should replace elements with text elements', function(){
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Toggle, {
+    showElement: true
+  });
 
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML, '<div><span></span></div>')
-    app.setProps({ showElement: false, showText: true })
-    renderer.render()
-    assert.equal(el.innerHTML, '<div>bar</div>')
-  })
+  assert.equal(el.innerHTML, '<div><span></span></div>');
+  world.update({ showElement: false, showText: true });
+  assert.equal(el.innerHTML, '<div>bar</div>');
 });
 
-it.skip('should replace text nodes with elements', function(){
-  var app = scene(Toggle)
-    .setProps({ showElement: false, showText: true })
+it('should replace text nodes with elements', function(){
+  var world = World().set('renderImmediate', true);
+  var el = div();
+  world.mount(el, Toggle, {
+    showElement: false,
+    showText: true
+  });
 
-  mount(app, function(el, renderer){
-    assert.equal(el.innerHTML, '<div>bar</div>')
-    app.setProps({ showElement: true, showText: false })
-    renderer.render()
-    assert.equal(el.innerHTML, '<div><span></span></div>')
-  })
+  assert.equal(el.innerHTML, '<div>bar</div>');
+  world.update({ showElement: true, showText: false });
+  assert.equal(el.innerHTML, '<div><span></span></div>');
 });
-
