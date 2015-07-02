@@ -13,11 +13,12 @@ var Delegate = {
     var active = state.active || 0;
     var self = this;
     var items = [1,2,3].map(function(i){
+      var cls = active === i ? 'active' : ''
       return dom('li', {
         onClick: function(e, component, setState){
           setState({ active: i })
         },
-        class: { active: active === i }
+        class: cls
       }, [
         dom('a', 'link')
       ]);
@@ -143,8 +144,9 @@ it('should delegate events on the root', function () {
   var DelegateRoot = {
     render: function (component, setState) {
       let {props, state} = component
+      let cls = state.active ? 'active' : ''
       return (
-        <div class={{ active: state.active }} onClick={onClick}>
+        <div class={cls} onClick={onClick}>
           <a>link</a>
         </div>
       )
