@@ -1,10 +1,6 @@
 require('es6-promise').polyfill()
 require("babelify/polyfill")
 
-describe('virtual', function(){
-  require('./virtual')
-});
-
 describe('DOM Renderer', function(){
   require('./dom')
   require('./dom/api')
