@@ -7,6 +7,7 @@ describe('virtual', function(){
 
 describe('DOM Renderer', function(){
   require('./dom')
+  require('./dom/api')
   require('./dom/mount-hook')
   require('./dom/update-hook')
   require('./dom/props')
