@@ -33,6 +33,7 @@
     "is-dom": "^1.0.5",
     "is-promise": "^2.0.0",
     "object-path": "^0.8.1",
-    "sliced": "0.0.5"
+    "sliced": "0.0.5",
+    "virtual-element": "^1.0.0"
   }
 }
