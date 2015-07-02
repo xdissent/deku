@@ -96,7 +96,7 @@ var rootId = 'root'
  * These elements won't be pooled
  */
 
-var avoidPooling = ['input', 'textarea'];
+var avoidPooling = ['input', 'textarea', 'select', 'option'];
 
 /**
  * Expose `dom`.
@@ -371,7 +371,10 @@ function render (element, container, opts) {
   function updateEntity (entityId) {
     var entity = entities[entityId]
 
-    if (!shouldUpdate(entity)) return updateChildren(entityId)
+    if (!shouldUpdate(entity)) {
+      commit(entity)
+      return updateChildren(entityId)
+    }
 
     var currentTree = entity.virtualElement
     var nextProps = entity.pendingProps
@@ -778,7 +781,7 @@ function render (element, container, opts) {
     } else {
 
       // Just remove the text node
-      if (!isElement(el)) return el.parentNode.removeChild(el)
+      if (!isElement(el)) return el && el.parentNode.removeChild(el)
 
       // Then we need to find any components within this
       // branch and unmount them.
@@ -962,7 +965,7 @@ function render (element, container, opts) {
    */
 
   function isElement (el) {
-    return !!el.tagName
+    return !!(el && el.tagName)
   }
 
   /**
