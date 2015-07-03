@@ -27,6 +27,8 @@ it('should render statics', function(){
   var app = (<App/>)
   mount(app, function(el, renderer) {
     assert.equal(el.innerHTML, '<div>Hello World</div>')
+    renderer.mount(<App/>)
+    assert.equal(el.innerHTML, '<div>Hello World</div>')
   })
 
 });
