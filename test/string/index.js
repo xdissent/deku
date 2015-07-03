@@ -87,6 +87,15 @@ it('should render an element with component root', function(){
   assert.equal(renderString(app), '<span>foo</span>')
 });
 
+it('should render a function as a component', function(){
+  var Component = function(component){
+    return <span>foo</span>;
+  };
+
+  var app = (<Component />)
+  assert.equal(renderString(app), '<span>foo</span>')
+});
+
 it('should render with props', function(){
   var Component = {
     render: function(component){

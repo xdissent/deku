@@ -54,6 +54,18 @@ it('should render and remove a component', function(){
   assert.equal(el.innerHTML, '');
 })
 
+it('should render and remove a function as a component', function(){
+  var Test = function(){
+    return dom('span', null, 'Hello World');
+  };
+  var app = dom(Test);
+  var el = div();
+  var renderer = render(app, el, { batching: false });
+  assert.equal(el.innerHTML, '<span>Hello World</span>');
+  renderer.remove();
+  assert.equal(el.innerHTML, '');
+})
+
 it('should have initial state', function(){
   var DefaultState = {
     initialState: function(props){
