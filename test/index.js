@@ -13,7 +13,6 @@ describe('DOM Renderer', function(){
   require('./dom/replace')
   require('./dom/events')
   require('./dom/state')
-  require('./dom/statics')
   require('./dom/pool')
   require('./dom/keys')
   require('./dom/hooks')
